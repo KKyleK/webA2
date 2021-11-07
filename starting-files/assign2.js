@@ -10,26 +10,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //The sort buttons
   const sort_bttn = document.querySelector("#playList p");
-  sort_bttn.addEventListener("input", sort);
+  sort_bttn.addEventListener("input", sort);  //Check if handler needs to be updated
+
+  //Shows screen 1
+  const select_play = document.querySelector("section ul");
+  select_play.addEventListener("click", show_screen_1);
+
+  //When you click on a play
+  const show_play = document.querySelector("aside button");
+  show_play.addEventListener("click", show_play_screen_1);
+
+
+
+  function show_play_screen_1(e){
+    
+
+  }
 
 
 
 
 
+  //Detects that the play has been clicked.
+  function show_screen_1(e){
+
+//Stop bubbling ********************
+    const page = document.querySelector("aside");  //The screen to change
+    const play = paintings.find(p => p.id == e.target.getAttribute("data-id"));
+
+
+    const header = document.createElement("h1");
+    const synopsis = document.createElement("h2");
+    const body = document.createElement("p");
+    const button = document.createElement("button")
+
+    page.innerHTML = "";
+
+    header.textContent = play.title;
+    body.textContent = play.synopsis;
+    synopsis.textContent = "Synopsis";
+
+    button.textContent = "Show Play Text";
+
+    page.appendChild(header);
+    page.append(synopsis);
+    page.appendChild(body);
+    page.appendChild(button);
+
+
+    show_screen_1_right(play);   
+  }
 
 
 
+  function show_screen_1_right(play){
 
+    const page = document.querySelector("#playHere");
+    page.innerHTML = "";
 
+    const header = document.createElement("h2");
+    const data = document.createElement("p");
 
+    header.textContent = play.title;
 
+    //Change later maybe
+    data.innerHTML = `${play.likelyDate},<br>${play.genre},<br>${play.wiki}, ${play.gutenberg}, ${play.shakespeareOrg}<br><br>${play.desc}`;
 
+    page.appendChild(header);
+    page.appendChild(data);
 
-
+  }
 
 
 
   function sort(e) {
+
+
+    //If ... Disable bubbling.
 
     const label_name = e.target.nextSibling.nextSibling.textContent;
 
