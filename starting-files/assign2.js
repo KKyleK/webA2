@@ -1,30 +1,75 @@
+//TODO Check if event bubbling really needs to be disabled where it is. 
 
+//Add an if e.target. ... for each event since it could be a bubble that is causing event to fire.
 
 document.addEventListener("DOMContentLoaded", () => {
 
-
   const paintings = JSON.parse(content);
 
-  //Add the paintings to the left hand side
   display_by_name();
-
-  //The sort buttons
+  
   const sort_bttn = document.querySelector("#playList p");
-  sort_bttn.addEventListener("input", sort);  //Check if handler needs to be updated
+  sort_bttn.addEventListener("input", sort);  //Sort the plays on the left hand side
 
-  //Shows screen 1
-  const select_play = document.querySelector("section ul");
+  const select_play = document.querySelector("section ul");  //Shows selected play 
   select_play.addEventListener("click", show_screen_1);
 
-  //When you click on a play
-  // const show_play = document.querySelector("aside button");
-  // show_play.addEventListener("click", show_play_screen_1);
+ 
 
 
 
-  function show_play_screen_1(e){
+  //This is the middle of the page.
+  function show_play_screen_2(e){
     
-    e.target   //The button was clicked
+    if(e.target.tagName === "BUTTON") {
+
+      e.stopPropagation();
+      const play = paintings.find(p => p.id == e.target.getAttribute("data-id"));
+      
+
+      //Can make this better later
+      
+      //Lots of js!
+      fill_screen(play);
+
+      
+      
+      
+      show_play_screen_2_right(play);
+    }
+  }
+
+//This only happens once user selects the box or whatever.
+  function show_play_screen_2_right(play){
+
+    
+    const page = document.querySelector("#playHere");
+    
+    page.innerHTML = "";
+    
+    
+    if (play.filename == ""){
+
+      const p = document.createElement("p");
+      p.textContent = "The play cannot be found";
+      page.appendChild(p);
+    }
+    else{
+      get_data(play.id);    //Fetch the api data and display it.
+    }
+  }
+
+  async function get_data(id){
+
+    const resp = await fetch("https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php?" + id);
+    const data = await resp.json();
+    
+    const page = document.querySelector("#playHere");
+
+    for (d of data){
+      const p = document.createElement("")
+    }
+
 
   }
 
@@ -35,60 +80,59 @@ document.addEventListener("DOMContentLoaded", () => {
   //Detects that the play has been clicked.
   function show_screen_1(e){
 
-//Stop bubbling ********************
-    const page = document.querySelector("aside");  //The screen to change
-    const play = paintings.find(p => p.id == e.target.getAttribute("data-id")); //Get the play that was clicked
 
+    if(e.target.tagName == "LI" || e.target.tagName == "BUTTON"){
 
-    const header = document.createElement("h1");
-    const synopsis = document.createElement("h2");
-    const body = document.createElement("p");
-    const button = document.createElement("button")
+      e.stopPropagation();
 
-    //const button_body = document.createElement("p");
+      const page = document.querySelector("aside");  //The screen to change
+      const play = paintings.find(p => p.id == e.target.getAttribute("data-id")); //Get the play that was clicked
+  
+  
+      const header = document.createElement("h1");
+      const synopsis = document.createElement("h2");
+      const body = document.createElement("p");
+      const button = document.createElement("button")
+  
+      page.innerHTML = "";
+  
+      header.textContent = play.title;
+      body.textContent = play.synopsis;
+      synopsis.textContent = "Synopsis";
+  
+      button.textContent = "Show Play Text";
+      button.setAttribute("data-id", play.id);
+      button.addEventListener("click",show_play_screen_2);
+  
+  
+      page.appendChild(header);
+      page.append(synopsis);
+      page.appendChild(body);
+      page.appendChild(button);
+      
+      show_screen_1_right(play);   
+    }
+  
+  
+  
+    function show_screen_1_right(play){
+  
+      const page = document.querySelector("#playHere");
+      page.innerHTML = "";
+  
+      const header = document.createElement("h2");
+      const data = document.createElement("p");
+  
+      header.textContent = play.title;
+  
+      //Change later maybe
+      data.innerHTML = `${play.likelyDate},<br>${play.genre},<br>${play.wiki}, ${play.gutenberg}, ${play.shakespeareOrg}<br><br>${play.desc}`;
+  
+      page.appendChild(header);
+      page.appendChild(data);
 
-    page.innerHTML = "";
-
-    header.textContent = play.title;
-    body.textContent = play.synopsis;
-    synopsis.textContent = "Synopsis";
-
-    button.textContent = "Show Play Text";
-    button.setAttribute("data-id", play.id);
-    button.addEventListener("click",show_play_screen_1);
-
-
-
-    //button_body.appendChild(button);
-
-
-    page.appendChild(header);
-    page.append(synopsis);
-    page.appendChild(body);
-    page.appendChild(button);
-    //page.appendChild(button_body);
-
-
-    show_screen_1_right(play);   
-  }
-
-
-
-  function show_screen_1_right(play){
-
-    const page = document.querySelector("#playHere");
-    page.innerHTML = "";
-
-    const header = document.createElement("h2");
-    const data = document.createElement("p");
-
-    header.textContent = play.title;
-
-    //Change later maybe
-    data.innerHTML = `${play.likelyDate},<br>${play.genre},<br>${play.wiki}, ${play.gutenberg}, ${play.shakespeareOrg}<br><br>${play.desc}`;
-
-    page.appendChild(header);
-    page.appendChild(data);
+    }
+    
 
   }
 
@@ -98,6 +142,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     //If ... Disable bubbling.
+    if (e.target.tagName === "INPUT") {
+    e.stopPropagation();
 
     const label_name = e.target.nextSibling.nextSibling.textContent;
 
@@ -109,6 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
       display_by_date();
     }
   }
+}
 
 
 
@@ -121,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function display_by_date() {
 
+   
     const plays = document.querySelector("#playList ul");
     plays.innerHTML = "";
 
@@ -167,29 +215,91 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-  //This is going to make the play go on the left.
-  //plays.addEventListener()
 
 
 
-  //returns an array of the play names
-  // function fill_names(){
-  //   names = [];
-  //   for (p of paintings){
-  //     names.push(p.id);
-  //   }
-
-  //   return names;
-  // }
 
 
+
+  function fill_screen(play){
+
+
+    const page = document.querySelector("aside");
+
+
+
+    // const fieldset = document.createElement("fieldset");
+    // fieldset.setAttribute("id", "interface");
+
+    // const fieldset2 = document.createElement("fieldset");
+    // const h2 = document.createElement("h2");
+
+    // const select = document.createElement("select");
+    // const select2 = document.createElement("select");
+
+    // fieldset.appendChild(h2);
+    // fieldset.appendChild(select);
+    // fieldset.appendChild(select2);
+    // fieldset.appendChild(fieldset2);
+
+    // const select = document.createElement("select");
+    // const option = document.createElement("option");
+    // select.appendChild(option);
+
+    // const input = document.createElement("input");
+    // const button = document.createElement("button");
+
+
+
+    // const button = ocument.createElement("button");
+    // fieldset.appendChild(button);
+
+    page.innerHTML =`
+    <fieldset id="interface">
+          <h2>Whatever I want</h2>
+          <select id="actList"></select>
+          <select id="sceneList"></select>
+          <fieldset>
+             <select id="playerList">
+                <option value=0>All Players</option>
+             </select>
+
+             <input type="text" id="txtHighlight" placeholder="Enter a search term" />
+             <button id="btnHighlight">Filter</button>
+          </fieldset> 
+        </fieldset>
+
+       <button>Close</button>`;
+    
+    
+
+    const but = document.querySelector("aside > button");
+    but.setAttribute("data-id", play.id);
+    but.addEventListener("click", show_screen_1);
+
+    
+    //document.querySelector("aside button").addEventListener("click", show_screen_1);
+    alert(but.textContent);
+
+
+
+
+
+  }
 });
+
+
+
+
+
+
+
+
 
 //const api = 'https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php';
 //const plays = JSON.parse(plays_info);
 
-//alert("here!");
-//alert(file_text[0].id);
+
 
 
 
