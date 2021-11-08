@@ -17,13 +17,14 @@ document.addEventListener("DOMContentLoaded", () => {
   select_play.addEventListener("click", show_screen_1);
 
   //When you click on a play
-  const show_play = document.querySelector("aside button");
-  show_play.addEventListener("click", show_play_screen_1);
+  // const show_play = document.querySelector("aside button");
+  // show_play.addEventListener("click", show_play_screen_1);
 
 
 
   function show_play_screen_1(e){
     
+    e.target   //The button was clicked
 
   }
 
@@ -36,13 +37,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //Stop bubbling ********************
     const page = document.querySelector("aside");  //The screen to change
-    const play = paintings.find(p => p.id == e.target.getAttribute("data-id"));
+    const play = paintings.find(p => p.id == e.target.getAttribute("data-id")); //Get the play that was clicked
 
 
     const header = document.createElement("h1");
     const synopsis = document.createElement("h2");
     const body = document.createElement("p");
     const button = document.createElement("button")
+
+    //const button_body = document.createElement("p");
 
     page.innerHTML = "";
 
@@ -51,11 +54,19 @@ document.addEventListener("DOMContentLoaded", () => {
     synopsis.textContent = "Synopsis";
 
     button.textContent = "Show Play Text";
+    button.setAttribute("data-id", play.id);
+    button.addEventListener("click",show_play_screen_1);
+
+
+
+    //button_body.appendChild(button);
+
 
     page.appendChild(header);
     page.append(synopsis);
     page.appendChild(body);
     page.appendChild(button);
+    //page.appendChild(button_body);
 
 
     show_screen_1_right(play);   
