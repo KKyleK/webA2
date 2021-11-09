@@ -224,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function fill_screen(play){
 
 
-    const page = document.querySelector("aside");
+    
 
 
 
@@ -253,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // const button = ocument.createElement("button");
     // fieldset.appendChild(button);
-
+    const page = document.querySelector("aside");
     page.innerHTML =`
     <fieldset id="interface">
           <h2>Whatever I want</h2>
@@ -279,11 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     
     //document.querySelector("aside button").addEventListener("click", show_screen_1);
-    alert(but.textContent);
-
-
-
-
+   
 
   }
 });
