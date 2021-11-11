@@ -68,6 +68,9 @@ If not:     Don't fetch the play.
     
 
 
+
+
+
     function show_play(e) {
 
       const page = document.querySelector("#playHere");    //Fill the right hand side
@@ -131,7 +134,7 @@ If not:     Don't fetch the play.
         select.appendChild(act);
       }
 
-      //    select.addEventListener
+      select.addEventListener("select", fill_scene);
       //Add event listener to populate the scenes now
 
       //Scene event listener will need the peoples names!
@@ -154,11 +157,15 @@ If not:     Don't fetch the play.
       page.appendChild(fieldset);
       page.appendChild(button2);
     }
+
+
+    function fill_scene(e){
+
+      alert(e.target.tagName);
+      if(e.target.tagName == "SELECT"){
+    }
   }
-
-
-
-
+  }
 
 
 
@@ -261,12 +268,6 @@ If not:     Don't fetch the play.
 
 
 
-
-
-
-
-
-
   function display_by_date() {
 
 
@@ -290,29 +291,44 @@ If not:     Don't fetch the play.
       for (let m of match) {
         const li = document.createElement("li");
         li.setAttribute("data-id", m.id);
-        li.textContent = m.id;
+        li.textContent = m.title;
         plays.appendChild(li);
       }
     }
   }
 
 
-
-
-
   function display_by_name() {
 
     const plays = document.querySelector("#playList ul");
     plays.innerHTML = "";  //clear the paintings
-    for (let p of paintings) {  //add them back
+
+
+    let name = [];
+    for (let p of paintings) {
+
+      if (!name.includes(p.title)) {  //no duplicates
+        name.push(p.title);
+      }
+    }
+
+    name.sort();
+  
+
+    for (let n of name) {    //find the element that has that date
+
+      const match = paintings.find(p => p.title == n); //if there is a duplciate name
+
+  //  for (let m of match) {  //add them back
 
       const li = document.createElement("li");
-      li.setAttribute("data-id", p.id);
-      li.textContent = p.id;
+      li.setAttribute("data-id", match.id);
+      li.textContent = match.title;;
       plays.appendChild(li);
-    }
+   // }
   }
-
+    
+  }
 
 
 
