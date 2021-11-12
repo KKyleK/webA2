@@ -16,8 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-
   //Start loading of the second page
   /* 1: Check if the play exists
 
@@ -34,15 +32,18 @@ If not:     Don't fetch the play.
     if (e.target.tagName === "BUTTON") {
 
       e.stopPropagation();
-      const play = paintings.find(p => p.id == e.target.getAttribute("data-id")); //Find the painting in use
+      const play = paintings.find(p => p.id == e.target.getAttribute("data-id")); //Find the play in use
 
-      get_data(play.id);    //Fill the screen all async.      
+      get_data(play.id);    //Fill the screen all async. Initial fetch    
+
 
     }
   }
 
 
-
+//Updates the play (on the left) With the filters and others from the API.
+  async function update_play(){
+  }
 
 
   /*
@@ -52,33 +53,121 @@ If not:     Don't fetch the play.
   2: add an event listener inside this function that will fill the right side once 
      the filter is choosen
   
-  NOTE: EVENT LISTENERS MUST BE CONTAINED
-  
+  NOTE: EVENT LISTENERS MUST BE CONTAINED. This is an ititial setup
   */
   async function get_data(id) {
-
-    //alert(id);   
 
     const resp = await fetch(`https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php?name=${id}`);
     const data = await resp.json();
 
-    fill_screen();
+    fill_screen();  
+    show_play("I","I");  //Act 1 scene 1
 
+    
     document.querySelector("aside button").addEventListener("click", show_play);  //The "Filter" button
+
     
 
+    //Change the play being shown
+    function show_play_handler(e){
+      show_play("I","I");   //Change to e. , e.
+    }
 
 
-
-
-    function show_play(e) {
+    //Programatically generates the play
+    //An event handler will call this.
+    //Act and scene will be in roman neumeral form.
+    function show_play(act_num,scene_num) {
 
       const page = document.querySelector("#playHere");    //Fill the right hand side
+      page.innerHTML = "";
 
-      for (d of data) {                       //Fill the other page with play info once clicked.
+
+      const act = data.acts.find(a=> a.name = `ACT ${act_num}`);         //the act
+      const scene = act.scenes.find(s=>s.name = `SCENE ${scene_num}`);   //The first scene
+
+
+      const h2 = document.createElement("h2");                       
+      h2.textContent = data.title;
+
+      const article = document.createElement("article");
+      article.id = "actHere";
+      const h3 = document.createElement("h3");
+      h3.textContent = act.name;
+
+      article.appendChild(h3);
+
+
+      const div = document.createElement("div");
+      div.id = "sceneHere";
+      
+      const h4 = document.createElement("h4");
+      h4.textContent = scene.name;
+
+      const p = document.createElement("p");
+      p.setAttribute("class", "title");
+      p.textContent = scene.title;
+
+      const p2 = document.createElement("p");
+      p2.setAttribute("class", "direction");
+      p2.textContent = scene.stageDirection;
+
+      div.appendChild(h4);
+      div.appendChild(p);
+      div.appendChild(p2);
+
+
+// append the rest to div.
+      for(s of scene.speeches) {
+
+        const div2 = document.createElement("div");
+        div2.setAttribute("class", "speech");
+        const span = document.createElement("span");
+        span.textContent = s.speaker;
+
+        div2.appendChild(span);
+
+        for (l of s.lines){
+
+          const line = document.createElement("p");
+          line.textContent = l;
+          div2.appendChild(line);
+        }
+        div.appendChild(div2);
+      }
+
+
+
+
+
+
+
+
+      article.appendChild(div);
+
+      page.appendChild(h2);
+      page.appendChild(article);
+
+
+     
+
+     
+      
+
+
+      
+
+      
+
+      
+      for (s of scene1) {                       //Fill the other page with play info once clicked.
         const p = document.createElement("");
       }
+
     }
+
+
+
 
 
 
@@ -87,6 +176,7 @@ If not:     Don't fetch the play.
   2. Scene Number
   3. Highlight text option
   
+  This is the middle of the screen.
     */
     function fill_screen() {
 
@@ -100,7 +190,7 @@ If not:     Don't fetch the play.
       const select = document.createElement("select");
       select.id = "actList";
 
-      const select2 = document.createElement("select");
+      const select2 = document.createElement("select");     //The scenes
       select2.id = "sceneList";
 
       const fieldset2 = document.createElement("fieldset");
@@ -125,7 +215,7 @@ If not:     Don't fetch the play.
       button2.setAttribute("data-id", id);
       button2.addEventListener("click", show_screen_1);
 
-
+      
 
       for (let a of data.acts) {  //The acts to choose from
 
@@ -134,10 +224,20 @@ If not:     Don't fetch the play.
         select.appendChild(act);
       }
 
-      select.addEventListener("select", fill_scene);
-      //Add event listener to populate the scenes now
+      select.addEventListener("select", fill_scene);     //the acts
+      
 
+      const scene = document.createElement("option");
+      scene.textContent = "Scene 1";
+      select2.appendChild(scene);   //The default option of select 1 choosen
+
+      
+
+
+      
+      //Add event listener to populate the scenes now
       //Scene event listener will need the peoples names!
+     
 
       fieldset2.appendChild(select3);
       fieldset2.appendChild(input);
@@ -156,15 +256,14 @@ If not:     Don't fetch the play.
 
       page.appendChild(fieldset);
       page.appendChild(button2);
+
     }
 
 
-    function fill_scene(e){
+    function fill_scene(){          //Fills the scenes by the choosen act
 
-      alert(e.target.tagName);
-      if(e.target.tagName == "SELECT"){
     }
-  }
+  
   }
 
 
@@ -338,8 +437,13 @@ If not:     Don't fetch the play.
 
 
 
+//Maps integer to roman neumeral
+function to_neumeral(num){
 
+  neumerals = ['I',"II","III","IV","V"]; //Can make this bigger
 
+  return neumerals[num-1];
+}
 
 
 
