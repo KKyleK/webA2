@@ -65,13 +65,22 @@ If not:     Don't fetch the play.
 
     document.querySelector("#btnHighlight").addEventListener("click", highlight);  //Does the filter
 
+
     //Filters based on selection. Name must be populated below.
     function highlight(e){
 
-      const play = document.querySelector("#playHere");
-      const text = document.querySelector("#txtHighlight");
+      const speaker = document.querySelector("#playerList");  //The player 
+      const play = document.querySelector("#sceneHere");       //the play (text)
+      const text = document.querySelector("#txtHighlight").value;   //the stuff to highlight
 
-      alert(text.value);
+      play.innerHTML = play.innerHTML.replaceAll("<b>","");
+      play.innerHTML = play.innerHTML.replaceAll("</b>","");
+     
+      play.innerHTML = play.innerHTML.replaceAll(text,`<b>${text}</b>`);
+
+     // let speaker = new RegExp(`${speaker}`);
+
+     // alert(text.value);
 
     }
 
