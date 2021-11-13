@@ -60,21 +60,28 @@ If not:     Don't fetch the play.
     const resp = await fetch(`https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php?name=${id}`);
     const data = await resp.json();
 
-    fill_screen();  
+    fill_screen();                
     show_play("ACT I","SCENE I");  //Act 1 scene 1 (Initial)
-    
-    document.querySelector("aside button").addEventListener("click", show_play);  //The "Filter" button
 
-    
-    //Change the play being shown
-    function show_play_handler(e){
-      show_play("ACT I","SCENE I");   //Change to e. , e.
+    document.querySelector("#btnHighlight").addEventListener("click", highlight);  //Does the filter
+
+    //Filters based on selection. Name must be populated below.
+    function highlight(e){
+
+      const play = document.querySelector("#playHere");
+      const text = document.querySelector("#txtHighlight");
+
+      alert(text.value);
+
     }
+
+
 
 
     //Programatically generates the play
     //An event handler will call this.
     //Act and scene will be in roman neumeral form.
+    //Fills the filter option for people you can choose
     function show_play(act_num,scene_num) {
 
       const page = document.querySelector("#playHere");    //Fill the right hand side
@@ -115,6 +122,9 @@ If not:     Don't fetch the play.
       div.appendChild(p2);
 
 
+
+      let speakers = [];   //unique speakers
+
 // append the rest to div.
       for(s of scene.speeches) {
 
@@ -124,7 +134,10 @@ If not:     Don't fetch the play.
         span.textContent = s.speaker;
 
         div2.appendChild(span);
-
+        
+        if (!speakers.includes(s.speaker)) {  //no duplicates
+          speakers.push(s.speaker);
+        }
         for (l of s.lines){
 
           const line = document.createElement("p");
@@ -139,7 +152,16 @@ If not:     Don't fetch the play.
       page.appendChild(h2);
       page.appendChild(article);
 
-
+      const speaker_option = document.querySelector("#playerList");
+      speaker_option.innerHTML = "";
+      for (let s of speakers){
+        const option = document.createElement("option");
+        option.textContent = s;
+        speaker_option.appendChild(option);
+      }
+      const all = document.createElement("option");
+      all.textContent = "All";
+      speaker_option.appendChild(all);
      
 
      
@@ -155,6 +177,7 @@ If not:     Don't fetch the play.
     //     const p = document.createElement("");
     //   }
      }
+    
 
 
 
@@ -214,7 +237,6 @@ If not:     Don't fetch the play.
 
         const act = document.createElement("option");
         act.textContent = a.name;
-
         select.appendChild(act);
       }
 
