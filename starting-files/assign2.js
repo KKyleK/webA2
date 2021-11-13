@@ -61,16 +61,14 @@ If not:     Don't fetch the play.
     const data = await resp.json();
 
     fill_screen();  
-    show_play("I","I");  //Act 1 scene 1
-
+    show_play("ACT I","SCENE I");  //Act 1 scene 1 (Initial)
     
     document.querySelector("aside button").addEventListener("click", show_play);  //The "Filter" button
 
     
-
     //Change the play being shown
     function show_play_handler(e){
-      show_play("I","I");   //Change to e. , e.
+      show_play("ACT I","SCENE I");   //Change to e. , e.
     }
 
 
@@ -83,8 +81,8 @@ If not:     Don't fetch the play.
       page.innerHTML = "";
 
 
-      const act = data.acts.find(a=> a.name = `ACT ${act_num}`);         //the act
-      const scene = act.scenes.find(s=>s.name = `SCENE ${scene_num}`);   //The first scene
+      const act = data.acts.find(a=> a.name == `${act_num}`);         //the act
+      const scene = act.scenes.find(s=>s.name == `${scene_num}`);   //The first scene
 
 
       const h2 = document.createElement("h2");                       
@@ -136,13 +134,6 @@ If not:     Don't fetch the play.
         div.appendChild(div2);
       }
 
-
-
-
-
-
-
-
       article.appendChild(div);
 
       page.appendChild(h2);
@@ -160,11 +151,10 @@ If not:     Don't fetch the play.
       
 
       
-      for (s of scene1) {                       //Fill the other page with play info once clicked.
-        const p = document.createElement("");
-      }
-
-    }
+    //   for (s of scene1) {                       //Fill the other page with play info once clicked.
+    //     const p = document.createElement("");
+    //   }
+     }
 
 
 
@@ -183,15 +173,18 @@ If not:     Don't fetch the play.
 
       const fieldset = document.createElement("fieldset");
       fieldset.setAttribute("id", "interface");            //this is the outer box (meh)
-
+      
       const h2 = document.createElement("h2");
       h2.textContent = id;
 
       const select = document.createElement("select");
-      select.id = "actList";
+      select.id = "actList";                                //Act list
 
       const select2 = document.createElement("select");     //The scenes
       select2.id = "sceneList";
+      select2.addEventListener("change", e=>change_scene(e.target.value));
+// HEREE
+
 
       const fieldset2 = document.createElement("fieldset");
 
@@ -221,23 +214,15 @@ If not:     Don't fetch the play.
 
         const act = document.createElement("option");
         act.textContent = a.name;
+
         select.appendChild(act);
       }
 
-      select.addEventListener("select", fill_scene);     //the acts
-      
 
-      const scene = document.createElement("option");
-      scene.textContent = "Scene 1";
-      select2.appendChild(scene);   //The default option of select 1 choosen
+      select.addEventListener("change", e=>fill_scene(e.target.value));     //Avalible scenes
+      select.setAttribute("selected","ACT I");          //Selects act 1 by default
 
       
-
-
-      
-      //Add event listener to populate the scenes now
-      //Scene event listener will need the peoples names!
-     
 
       fieldset2.appendChild(select3);
       fieldset2.appendChild(input);
@@ -257,13 +242,39 @@ If not:     Don't fetch the play.
       page.appendChild(fieldset);
       page.appendChild(button2);
 
+      fill_scene("ACT I");  //Initial load  of the scenes.
     }
 
 
-    function fill_scene(){          //Fills the scenes by the choosen act
+   function change_scene(scene_num){
+    
+    const act = document.querySelector("#actList");
+    
+    show_play(act.value,scene_num);
+   }
 
+
+
+
+    
+    //When the act number is changed
+    function fill_scene(act_name){
+      const scene = document.querySelector("#sceneList");
+      scene.innerHTML = "";
+
+      const sceneList = data.acts.find(a=>a.name == act_name);
+
+    for (let s of sceneList.scenes) {  //The acts to choose from
+
+        const option = document.createElement("option");
+        option.textContent = s.name;
+        scene.appendChild(option);
+      }
+
+      
+
+      show_play(act_name,"SCENE I");  //Initial load.
     }
-  
   }
 
 

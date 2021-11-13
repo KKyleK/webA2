@@ -36,4 +36,4 @@ first act of the selected play.
 
 11. Store each API request.
 
-12. 
+12. When play clicked (midsummerNight dream) It says dream in blue. Might want to change that
