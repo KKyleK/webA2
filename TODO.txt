@@ -5,7 +5,7 @@ those plays that have text available
 2: The three links must be working hyperlinks (Dont but the link 
 put some link and then give it src = "")                                  //DONE
 
-3.when a play is selected, change its appearance in the list so 
+3.when a play is selected, change its appearance in the list so  ->
 that the user has some visual feedback (use classList.add()
  to add a class to the element)
 

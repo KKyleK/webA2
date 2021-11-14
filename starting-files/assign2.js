@@ -11,8 +11,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const sort_bttn = document.querySelector("#playList p");
   sort_bttn.addEventListener("input", sort);  //Sort the plays on the left hand side
 
-  const select_play = document.querySelector("section ul");  //Shows selected play 
+
+
+  const select_play = document.querySelector("section ul");  //Shows selected play
+  
+  select_play.addEventListener("click",e => {
+
+    const plays = document.querySelectorAll("section ul li");
+    for (p of plays){
+      if (p.classList.contains("selected")){
+        p.classList.remove("selected");
+      }
+    }
+
+    e.target.classList.add("selected");
+  });
+  
   select_play.addEventListener("click", show_screen_1);
+  
   
 
 
@@ -38,11 +54,6 @@ If not:     Don't fetch the play.
 
 
     }
-  }
-
-
-//Updates the play (on the left) With the filters and others from the API.
-  async function update_play(){
   }
 
 
@@ -451,13 +462,14 @@ If not:     Don't fetch the play.
 
 
   function sort(e) {
-
-
     //If ... Disable bubbling.
     if (e.target.tagName === "INPUT") {
       e.stopPropagation();
 
       const label_name = e.target.nextSibling.nextSibling.textContent;
+      const highlighted = document.querySelector(".selected").textContent; //re highlight after editing list
+
+      alert(highlighted);
 
       if (label_name == "Name") {
         display_by_name();
@@ -465,6 +477,14 @@ If not:     Don't fetch the play.
       }
       else if (label_name == "Date") {
         display_by_date();
+      }
+      
+      const to_highlight = document.querySelectorAll("section ul li");
+
+      for (i of to_highlight){
+        if(i.textContent == highlighted){
+          i.classList.add("selected");
+        }
       }
     }
   }
