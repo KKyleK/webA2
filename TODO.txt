@@ -24,9 +24,6 @@ in the second column), and in the third column display
 7. (Optional for correctness) data-id attribute of the <li> for the 
 play as a query string, as shown in the comments in assign2.js
 
-8. populate the <section  id="playHere">, <article id="actHere">,
- and <div id="sceneHere"> elements with the first scene from the 
-first act of the selected play.
 
 9.Add event handlers to the <select> elements. They will change
  what part of the play is displayed.
@@ -37,3 +34,5 @@ first act of the selected play.
 11. Store each API request.
 
 12. When play clicked (midsummerNight dream) It says dream in blue. Might want to change that
+
+13. screen might be a little off compared to what id dhould be (see powerpoint)

@@ -66,24 +66,40 @@ If not:     Don't fetch the play.
     document.querySelector("#btnHighlight").addEventListener("click", highlight);  //Does the filter
 
 
+
+
     //Filters based on selection. Name must be populated below.
     function highlight(e){
 
-      const speaker = document.querySelector("#playerList");  //The player 
-      const play = document.querySelector("#sceneHere");       //the play (text)
+      //Rewrite play:
+      
+      const speaker = document.querySelector("#playerList").value;        //The player 
+                  //the play (text)
       const text = document.querySelector("#txtHighlight").value;   //the stuff to highlight
 
-      play.innerHTML = play.innerHTML.replaceAll("<b>","");
-      play.innerHTML = play.innerHTML.replaceAll("</b>","");
-     
-      play.innerHTML = play.innerHTML.replaceAll(text,`<b>${text}</b>`);
+      const act = document.querySelector("#actList");
+      const scene = document.querySelector("#sceneList");
 
-     // let speaker = new RegExp(`${speaker}`);
+      show_play(act.value,scene.value); //Refresh the play
+      document.querySelector("#playerList").value = speaker;
 
-     // alert(text.value);
+      const play = document.querySelector("#sceneHere");
+      
+      if(text != "" && text != " "){
+        
+        play.innerHTML = play.innerHTML.replaceAll(text,`<b>${text}</b>`);
+      }
 
+      if (speaker!= "All"){
+      const speaches = document.querySelectorAll(".speech");
+
+      for (s of speaches){
+        if (s.firstChild.textContent != speaker){
+          s.remove();
+        }
+      }
     }
-
+  }
 
 
 
@@ -319,6 +335,16 @@ If not:     Don't fetch the play.
 
 
 
+
+
+
+
+
+
+
+
+
+
   //Detects that the play has been clicked.
   function show_screen_1(e) {
 
@@ -347,6 +373,7 @@ If not:     Don't fetch the play.
 
       if (play.filename == "") {
 
+        button.setAttribute("hidden","True");   //FIX
         //Clear the button
       }
       else {
