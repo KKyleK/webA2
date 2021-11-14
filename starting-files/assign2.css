@@ -73,11 +73,15 @@ section {
 #playList {
    background-color: var(--list-bg-color);
 }
-#playList ul {
+#playList ul,#playInfo {
    list-style: none;
    margin: 0 0 0;
    padding: 0;
 }
+/* 
+#info */
+
+
 #playList ul li {
    margin-top: 5px;
    cursor: pointer;

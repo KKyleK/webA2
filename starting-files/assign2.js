@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const select_play = document.querySelector("section ul");  //Shows selected play 
   select_play.addEventListener("click", show_screen_1);
-
+  
 
 
   //Start loading of the second page
@@ -349,7 +349,7 @@ If not:     Don't fetch the play.
   function show_screen_1(e) {
 
 
-    if (e.target.tagName == "LI" || e.target.tagName == "BUTTON") {
+    if (e.target.tagName == "LI" || e.target.tagName == "BUTTON") {   //If close was clicked.
 
       e.stopPropagation();
 
@@ -391,6 +391,9 @@ If not:     Don't fetch the play.
 
 
 
+
+
+
     function show_screen_1_right(play) {
 
       const page = document.querySelector("#playHere");
@@ -398,18 +401,51 @@ If not:     Don't fetch the play.
 
       const header = document.createElement("h2");
       const data = document.createElement("p");
-
+      
       header.textContent = play.title;
 
+      const wiki_link = document.createElement("a");
+      const gutenberg_link = document.createElement("a");
+      const shakespeare_link = document.createElement("a");
+
+      const list = document.createElement("ul");              //The list of links
+      list.id = "playInfo";                         
+
+      const placeholder = document.createElement("li");
+      const placeholder2 = document.createElement("li");
+      const placeholder3 = document.createElement("li");
+
+
+      wiki_link.setAttribute("href",play.wiki);
+      wiki_link.textContent = "Wiki link";
+      gutenberg_link.setAttribute("href",play.gutenberg);
+      gutenberg_link.textContent = "Gutenberg link";
+      shakespeare_link.setAttribute("href",play.shakespeareOrg);
+      shakespeare_link.textContent = "Shakespeare org link";
       //Change later maybe
-      data.innerHTML = `${play.likelyDate},<br>${play.genre},<br>${play.wiki}, ${play.gutenberg}, ${play.shakespeareOrg}<br><br>${play.desc}`;
+      //data.innerHTML = `<a href = ${play.likelyDate}      ,<br>${play.genre},<br>${play.wiki}, ${play.gutenberg}, ${play.shakespeareOrg}<br><br>${play.desc}`;
+
+      placeholder.appendChild(wiki_link);
+      placeholder2.appendChild(gutenberg_link);
+      placeholder3.appendChild(shakespeare_link);
+
+      list.appendChild(placeholder);
+      list.appendChild(placeholder2);
+      list.appendChild(placeholder3);
+      
+      const plays_info = document.createElement("p");
+      plays_info.textContent = play.desc;
+
+      const genre = document.createElement("p");
+      genre.textContent = play.genre + ",";
+
+      data.append(genre);
+      data.appendChild(list);
+      data.appendChild(plays_info);
 
       page.appendChild(header);
       page.appendChild(data);
-
     }
-
-
   }
 
 
