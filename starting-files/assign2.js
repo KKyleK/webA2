@@ -1,22 +1,24 @@
-//TODO Check if event bubbling really needs to be disabled where it is. 
+//henry V is bugged. Something wrong with the json since it breaks when parsed (the request is)
+//FIX HIGHLIGHTING to only persons.    Meh its a feature
 
-//Add an if e.target. ... for each event since it could be a bubble that is causing event to fire.
 
 document.addEventListener("DOMContentLoaded", () => {
 
   const paintings = JSON.parse(content);
 
+  display_header();
   display_by_name();
+  display_welcome_message();
 
   const sort_bttn = document.querySelector("#playList p");
   sort_bttn.addEventListener("input", sort);  //Sort the plays on the left hand side
-
-
+  
+  
 
   const select_play = document.querySelector("section ul");  //Shows selected play
   
   select_play.addEventListener("click",e => {
-
+    if(e.target.tagName == "LI"){
     const plays = document.querySelectorAll("section ul li");
     for (p of plays){
       if (p.classList.contains("selected")){
@@ -25,11 +27,58 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     e.target.classList.add("selected");
-  });
-  
+  }});
   select_play.addEventListener("click", show_screen_1);
   
+
+
+
+
+  function display_header(){
+    const header = document.querySelector("header");
+    const button = document.createElement("button");
+    button.id = "credit";
+    button.textContent = "Credits";
+    header.appendChild(button); 
+    button.addEventListener("mouseover", e=>{
+      
+      try{  //If its already there
+        document.querySelector("#credit_box").remove();
+      }
+      finally{
+      const box = document.querySelector("#playHere");
+      const old = box.innerHTML;
+      box.innerHTML = "";
+
+      const credit_box = document.createElement("div");
+      credit_box.id = "credit_box";
+      const credit_name = document.createElement("p");
+      credit_name.textContent = "Page by Kyle Koivuneva."
+      const credit_course = document.createElement("p");
+      credit_course.textContent = "COMP 3612."
+
+      credit_box.appendChild(credit_name);
+      credit_box.appendChild(credit_course);
+
+      // box.appendChild(credit_name);
+      // box.appendChild(credit_course);  
+      box.appendChild(credit_box);
+      
+      setTimeout(()=>box.innerHTML = old,5000);
+      }
+    });
+  }
   
+
+
+  //Initial welcome message
+  function display_welcome_message(){
+
+    const left_column = document.querySelector("#playHere");
+    const p = document.createElement("p");
+    p.textContent = "Select a play to see details";
+    left_column.appendChild(p);
+  }
 
 
   //Start loading of the second page
@@ -50,9 +99,11 @@ If not:     Don't fetch the play.
       e.stopPropagation();
       const play = paintings.find(p => p.id == e.target.getAttribute("data-id")); //Find the play in use
 
+
+
+      
+
       get_data(play.id);    //Fill the screen all async. Initial fetch    
-
-
     }
   }
 
@@ -68,14 +119,24 @@ If not:     Don't fetch the play.
   */
   async function get_data(id) {
 
+    let play_local = localStorage.getItem(id);
+
+    if(play_local == null){
+    
     const resp = await fetch(`https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php?name=${id}`);
-    const data = await resp.json();
+    var data = await resp.json();    //Has to be function scoped
+    localStorage.setItem(id,JSON.stringify(data));
+
+    
+
+    }
+    else{
+      var data = JSON.parse(play_local);   
+    }
 
     fill_screen();                
     show_play("ACT I","SCENE I");  //Act 1 scene 1 (Initial)
-
     document.querySelector("#btnHighlight").addEventListener("click", highlight);  //Does the filter
-
 
 
 
@@ -101,7 +162,7 @@ If not:     Don't fetch the play.
         play.innerHTML = play.innerHTML.replaceAll(text,`<b>${text}</b>`);
       }
 
-      if (speaker!= "All"){
+      if (speaker!= "ALL"){
       const speaches = document.querySelectorAll(".speech");
 
       for (s of speaches){
@@ -196,22 +257,12 @@ If not:     Don't fetch the play.
         speaker_option.appendChild(option);
       }
       const all = document.createElement("option");
-      all.textContent = "All";
+      all.textContent = "ALL";
       speaker_option.appendChild(all);
      
 
      
       
-
-
-      
-
-      
-
-      
-    //   for (s of scene1) {                       //Fill the other page with play info once clicked.
-    //     const p = document.createElement("");
-    //   }
      }
     
 
@@ -242,7 +293,7 @@ If not:     Don't fetch the play.
       const select2 = document.createElement("select");     //The scenes
       select2.id = "sceneList";
       select2.addEventListener("change", e=>change_scene(e.target.value));
-// HEREE
+
 
 
       const fieldset2 = document.createElement("fieldset");
@@ -384,7 +435,8 @@ If not:     Don't fetch the play.
 
       if (play.filename == "") {
 
-        button.setAttribute("hidden","True");   //FIX
+        //button.setAttribute("hidden","True");   //FIX
+        button.style.display = "none";
         //Clear the button
       }
       else {
@@ -463,14 +515,17 @@ If not:     Don't fetch the play.
 
   function sort(e) {
     //If ... Disable bubbling.
+    
     if (e.target.tagName === "INPUT") {
+
       e.stopPropagation();
 
       const label_name = e.target.nextSibling.nextSibling.textContent;
-      const highlighted = document.querySelector(".selected").textContent; //re highlight after editing list
-
-      alert(highlighted);
-
+      
+      //Uses querySelectorAll so that it dosent break if there are no matches
+      const highlighted = document.querySelectorAll(".selected"); //re highlight after editing list
+     
+      
       if (label_name == "Name") {
         display_by_name();
 
@@ -478,23 +533,23 @@ If not:     Don't fetch the play.
       else if (label_name == "Date") {
         display_by_date();
       }
-      
+     
       const to_highlight = document.querySelectorAll("section ul li");
 
       for (i of to_highlight){
-        if(i.textContent == highlighted){
+        if(i.textContent == highlighted[0].textContent){
           i.classList.add("selected");
         }
       }
     }
   }
-
+  
 
 
 
   function display_by_date() {
 
-
+    
     const plays = document.querySelector("#playList ul");   //The individual plays
     plays.innerHTML = "";
 
@@ -516,6 +571,13 @@ If not:     Don't fetch the play.
         const li = document.createElement("li");
         li.setAttribute("data-id", m.id);
         li.textContent = m.title;
+
+        if(m.filename != ""){
+          const img = document.createElement("img");
+          img.setAttribute("src","icon.png");
+          li.appendChild(img);
+        }
+
         plays.appendChild(li);
       }
     }
@@ -535,19 +597,22 @@ If not:     Don't fetch the play.
         name.push(p.title);
       }
     }
-
     name.sort();
   
-
     for (let n of name) {    //find the element that has that date
 
-      const match = paintings.find(p => p.title == n); //if there is a duplciate name
-
-  //  for (let m of match) {  //add them back
+      const match = paintings.find(p => p.title == n); //The element to be added
 
       const li = document.createElement("li");
       li.setAttribute("data-id", match.id);
-      li.textContent = match.title;;
+      li.textContent = match.title;
+
+      if(match.filename != ""){
+        const img = document.createElement("img");
+        img.setAttribute("src","icon.png");
+        li.appendChild(img);
+      }
+
       plays.appendChild(li);
    // }
   }
@@ -556,19 +621,6 @@ If not:     Don't fetch the play.
 
 
 
-
-
-
-
-
-
-//Maps integer to roman neumeral
-function to_neumeral(num){
-
-  neumerals = ['I',"II","III","IV","V"]; //Can make this bigger
-
-  return neumerals[num-1];
-}
 
 
 

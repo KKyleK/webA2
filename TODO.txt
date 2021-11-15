@@ -1,37 +1,15 @@
-1. the list must be made scrollable by setting the overflow-y
- property of the container to scroll. Ideally, add an icon to 
-those plays that have text available
+1. list scrollable?
 
-2: The three links must be working hyperlinks (Dont but the link 
-put some link and then give it src = "")                                  //DONE
-
-3.when a play is selected, change its appearance in the list so  ->
-that the user has some visual feedback (use classList.add()
- to add a class to the element)
-
-4.If the filename property of the play is empty, then there is no 
-play text available; in such a case, simply hide the button
- (change its display property to none).
 
 5. Be sure to style the play details nicely using contrast and spacing (STYLE)
 
-6. When no plays have been selected yet (i.e., when page is first viewed), 
-don’t display anything in the second column (except a background color 
-in the second column), and in the third column display 
-“Select a play to see details”. This message will disappear once a play
- is selected.
 
 7. (Optional for correctness) data-id attribute of the <li> for the 
 play as a query string, as shown in the comments in assign2.js
 
 
-9.Add event handlers to the <select> elements. They will change
- what part of the play is displayed.
+10. Add the header   ---->>>>> 
 
-10. Add the header
-
-
-11. Store each API request.
 
 12. When play clicked (midsummerNight dream) It says dream in blue. Might want to change that
 

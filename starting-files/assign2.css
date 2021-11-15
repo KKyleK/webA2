@@ -70,10 +70,32 @@ section {
 
 /* ----- styles for first column  ------ */
 
+/* Make image fit */
+li img{
+
+   height: 20px;
+   width: 30px; 
+    position: relative;
+   top: 5px;
+}
+
+#playInfo li a{
+   text-decoration: none;
+}
+
+#playInfo li a:visited {
+   text-decoration: none;
+   color:black;
+ }
+ 
+ #playInfo li a:hover {
+   color:grey;
+ }
+
+ 
 .selected{
    color : red;
 }
-
 
 #playList {
    background-color: var(--list-bg-color);
@@ -161,3 +183,24 @@ p.direction {
    margin-top: 12px;
 }
 
+
+/* Style for header button */
+
+#credit{
+   display: inline-block;
+   position: relative;
+   left: 90%;
+   bottom:60px;
+}
+
+#credit_box{
+   border : solid;
+   border-color: rgb(61, 61, 136);
+   background-color: var(--list-bg-color);
+   color:black;
+
+   padding:1%;
+   margin-left:40%;
+   margin-top:20%;
+   width:200px;
+}
