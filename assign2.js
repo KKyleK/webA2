@@ -5,7 +5,12 @@ Instructor: Randy Connolly.
 
 Description: A website which uses the provided API to display 
              Shakespeare plays.
+*/
 
+
+/*
+Main: Fills initial screen and adds event listeners to allow 
+      user to populate list of plays view.
 */
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -57,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       finally {
         const box = document.querySelector("#playHere");
-        const old = box.innerHTML;                       //saves html of page.
+        const old = box.innerHTML;                       //saves HTML of page.
         box.innerHTML = "";
 
         const credit_box = document.createElement("div");
@@ -67,12 +72,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const credit_course = document.createElement("p");
         credit_course.textContent = "COMP 3612."
 
-        credit_box.appendChild(credit_name);            //adds new html with the credits.
+        credit_box.appendChild(credit_name);            //adds new HTML with the credits.
         credit_box.appendChild(credit_course);
 
         box.appendChild(credit_box);
 
-        setTimeout(() => box.innerHTML = old, 5000);    //after 5 seconds puts back the html
+        setTimeout(() => box.innerHTML = old, 5000);    //after 5 seconds puts back the HTML
       }
     });
   }
@@ -345,37 +350,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // play_view_middle
-  // play_view_right
-
   /*
   Function: get_data().
 
@@ -410,7 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
       Function: play_view_middle().
     
       purpose: Fills the middle of the screen with select options, 
-               and other html markup.
+               and other HTML markup.
     */
     function play_view_middle() {
 
@@ -500,148 +474,147 @@ document.addEventListener("DOMContentLoaded", () => {
 
       play_view_right(act_name, "SCENE I");  //When a new act is selected show scene 1 by default.
     }
-  
-
- /*
-      Function: fill_scene(). 
-    
-      purpose: Helper function that changes the scene being shown.
-    */
-  function change_scene(scene_num) {
-
-    const act = document.querySelector("#actList");
-
-    play_view_right(act.value, scene_num);
-  }
 
 
+    /*
+         Function: fill_scene(). 
+       
+         purpose: Helper function that changes the scene being shown.
+       */
+    function change_scene(scene_num) {
 
+      const act = document.querySelector("#actList");
 
-
-  //Filters based on selection. Name must be populated below.
-  function highlight(e) {
-
-    //Rewrite play:
-
-    const speaker = document.querySelector("#playerList").value;        //The player 
-    //the play (text)
-    const text = document.querySelector("#txtHighlight").value;   //the stuff to highlight
-
-    const act = document.querySelector("#actList");
-    const scene = document.querySelector("#sceneList");
-
-    play_view_right(act.value, scene.value); //Refresh the play
-    document.querySelector("#playerList").value = speaker;
-
-    const play = document.querySelector("#sceneHere");
-
-    if (text != "" && text != " ") {
-
-      play.innerHTML = play.innerHTML.replaceAll(text, `<b>${text}</b>`);
+      play_view_right(act.value, scene_num);
     }
 
-    if (speaker != "ALL") {
-      const speaches = document.querySelectorAll(".speech");
 
-      for (s of speaches) {
-        if (s.firstChild.textContent != speaker) {
-          s.remove();
+
+
+
+    /*
+    Function: highlight().
+  
+    purpose: Highlights the text in the play that matches the users input.
+             Changes the text to only be the speaker who is talking.
+  
+    details: Wraps text in <b> tags to highlight. 
+             Removes all speeches that are not done by the 
+             speaker selected.
+  */
+    function highlight(e) {
+
+      const speaker = document.querySelector("#playerList").value;        //The player 
+      const text = document.querySelector("#txtHighlight").value;   //the stuff to highlight
+      const act = document.querySelector("#actList");
+      const scene = document.querySelector("#sceneList");
+
+      play_view_right(act.value, scene.value);                      //Refresh the play to delete previous highlighting.
+      document.querySelector("#playerList").value = speaker;
+
+      const play = document.querySelector("#sceneHere");
+
+      if (text != "" && text != " ") {    //Only replace if valid text was entered.
+
+        play.innerHTML = play.innerHTML.replaceAll(text, `<b>${text}</b>`);
+      }
+
+      if (speaker != "ALL") {
+        const speaches = document.querySelectorAll(".speech");
+
+        for (let s of speaches) {
+          if (s.firstChild.textContent != speaker) {    //Remove speakers that don't match
+            s.remove();
+          }
         }
       }
     }
-  }
 
 
+    /*
+     Function: play_view_right
+   
+     purpose: Generates the play on the right hand column.
+   
+     details: Generates the HTML markup based on the selected
+              act and play. Based on the characters in the given 
+              scene, populates the actor filter option.
+   */
+    function play_view_right(act_num, scene_num) {
 
-  //Programatically generates the play
-  //An event handler will call this.
-  //Act and scene will be in roman neumeral form.
-  //Fills the filter option for people you can choose
-  function play_view_right(act_num, scene_num) {
+      const page = document.querySelector("#playHere");    //The right column of the screen.
+      page.innerHTML = "";
 
+      const act = data.acts.find(a => a.name == `${act_num}`);         //the act
+      const scene = act.scenes.find(s => s.name == `${scene_num}`);   //The first scene
 
-    const page = document.querySelector("#playHere");    //Fill the right hand side
-    page.innerHTML = "";
+      const title = document.createElement("h2");   //add content
+      title.textContent = data.title;
 
+      const article = document.createElement("article");
+      article.id = "actHere";
+      const act_name = document.createElement("h3");
+      act_name.textContent = act.name;
 
-    const act = data.acts.find(a => a.name == `${act_num}`);         //the act
-    const scene = act.scenes.find(s => s.name == `${scene_num}`);   //The first scene
+      article.appendChild(act_name);
 
+      const current_scene = document.createElement("div");
+      current_scene.id = "sceneHere";
 
-    const h2 = document.createElement("h2");
-    h2.textContent = data.title;
+      const scene_name = document.createElement("h4");
+      scene_name.textContent = scene.name;
 
-    const article = document.createElement("article");
-    article.id = "actHere";
-    const h3 = document.createElement("h3");
-    h3.textContent = act.name;
+      const scene_title = document.createElement("p");
+      scene_title.setAttribute("class", "title");
+      scene_title.textContent = scene.title;
 
-    article.appendChild(h3);
+      const stage_direction = document.createElement("p");
+      stage_direction.setAttribute("class", "direction");
+      stage_direction.textContent = scene.stageDirection;
 
+      current_scene.appendChild(scene_name);
+      current_scene.appendChild(scene_title);
+      current_scene.appendChild(stage_direction);
 
-    const div = document.createElement("div");
-    div.id = "sceneHere";
+      let speakers = [];   //Based on the scene, populates the speaker filter.
 
-    const h4 = document.createElement("h4");
-    h4.textContent = scene.name;
+      for (s of scene.speeches) {
 
-    const p = document.createElement("p");
-    p.setAttribute("class", "title");
-    p.textContent = scene.title;
+        const speech = document.createElement("div");      //create the speeches.
+        speech.setAttribute("class", "speech");
+        const span = document.createElement("span");
+        span.textContent = s.speaker;
 
-    const p2 = document.createElement("p");
-    p2.setAttribute("class", "direction");
-    p2.textContent = scene.stageDirection;
+        speech.appendChild(span);
 
-    div.appendChild(h4);
-    div.appendChild(p);
-    div.appendChild(p2);
+        if (!speakers.includes(s.speaker)) {  //no duplicates, add it to speaker filter.
+          speakers.push(s.speaker);
+        }
+        for (let l of s.lines) {
 
-
-
-    let speakers = [];   //unique speakers
-
-    // append the rest to div.
-    for (s of scene.speeches) {
-
-      const div2 = document.createElement("div");
-      div2.setAttribute("class", "speech");
-      const span = document.createElement("span");
-      span.textContent = s.speaker;
-
-      div2.appendChild(span);
-
-      if (!speakers.includes(s.speaker)) {  //no duplicates
-        speakers.push(s.speaker);
+          const line = document.createElement("p");     //write out the speaches
+          line.textContent = l;
+          speech.appendChild(line);
+        }
+        current_scene.appendChild(speech);
       }
-      for (l of s.lines) {
 
-        const line = document.createElement("p");
-        line.textContent = l;
-        div2.appendChild(line);
+      article.appendChild(current_scene);
+
+      page.appendChild(title);
+      page.appendChild(article);
+
+      const speaker_option = document.querySelector("#playerList");
+      speaker_option.innerHTML = "";
+
+      for (let s of speakers) {       //add the speakers to the list
+        const option = document.createElement("option");
+        option.textContent = s;
+        speaker_option.appendChild(option);
       }
-      div.appendChild(div2);
+      const all = document.createElement("option"); //add ALL: shows all speeches.
+      all.textContent = "ALL";
+      speaker_option.appendChild(all);
     }
-
-    article.appendChild(div);
-
-    page.appendChild(h2);
-    page.appendChild(article);
-
-    const speaker_option = document.querySelector("#playerList");
-    speaker_option.innerHTML = "";
-    for (let s of speakers) {
-      const option = document.createElement("option");
-      option.textContent = s;
-      speaker_option.appendChild(option);
-    }
-    const all = document.createElement("option");
-    all.textContent = "ALL";
-    speaker_option.appendChild(all);
-
-
-
-
-  }
   }
 });
