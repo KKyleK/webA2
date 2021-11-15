@@ -1,10 +1,15 @@
-//henry V is bugged. Something wrong with the json since it breaks when parsed (the request is)
-//FIX HIGHLIGHTING to only persons.    Meh its a feature
+/*
+Name: Kyle Koivuneva.
+Course: COMP 3612.
+Instructor: Randy Connolly.
 
+Description: A website which uses the provided API to display 
+             Shakespeare plays.
 
+*/
 document.addEventListener("DOMContentLoaded", () => {
 
-  const paintings = JSON.parse(content);
+  const paintings = JSON.parse(content);  //The Json file provided.
 
   display_header();
   display_by_name();
@@ -12,67 +17,66 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const sort_bttn = document.querySelector("#playList p");
   sort_bttn.addEventListener("input", sort);  //Sort the plays on the left hand side
-  
-  
 
-  const select_play = document.querySelector("section ul");  //Shows selected play
-  
-  select_play.addEventListener("click",e => {
-    if(e.target.tagName == "LI"){
-    const plays = document.querySelectorAll("section ul li");
-    for (p of plays){
-      if (p.classList.contains("selected")){
-        p.classList.remove("selected");
+  const select_play = document.querySelector("section ul");  //Shows selected play's view screen.
+
+  select_play.addEventListener("click", e => {    //Highlights the selcted play.
+    if (e.target.tagName == "LI") {
+      const plays = document.querySelectorAll("section ul li");
+      for (p of plays) {
+        if (p.classList.contains("selected")) {
+          p.classList.remove("selected");
+        }
       }
+
+      e.target.classList.add("selected");
     }
-
-    e.target.classList.add("selected");
-  }});
-  select_play.addEventListener("click", show_screen_1);
-  
+  });
+  select_play.addEventListener("click", list_of_plays); //Fills list of plays view with selected play.
 
 
 
 
-  function display_header(){
+
+  function display_header() {
     const header = document.querySelector("header");
     const button = document.createElement("button");
     button.id = "credit";
     button.textContent = "Credits";
-    header.appendChild(button); 
-    button.addEventListener("mouseover", e=>{
-      
-      try{  //If its already there
+    header.appendChild(button);
+    button.addEventListener("mouseover", e => {
+
+      try {  //If its already there
         document.querySelector("#credit_box").remove();
       }
-      finally{
-      const box = document.querySelector("#playHere");
-      const old = box.innerHTML;
-      box.innerHTML = "";
+      finally {
+        const box = document.querySelector("#playHere");
+        const old = box.innerHTML;
+        box.innerHTML = "";
 
-      const credit_box = document.createElement("div");
-      credit_box.id = "credit_box";
-      const credit_name = document.createElement("p");
-      credit_name.textContent = "Page by Kyle Koivuneva."
-      const credit_course = document.createElement("p");
-      credit_course.textContent = "COMP 3612."
+        const credit_box = document.createElement("div");
+        credit_box.id = "credit_box";
+        const credit_name = document.createElement("p");
+        credit_name.textContent = "Page by Kyle Koivuneva."
+        const credit_course = document.createElement("p");
+        credit_course.textContent = "COMP 3612."
 
-      credit_box.appendChild(credit_name);
-      credit_box.appendChild(credit_course);
+        credit_box.appendChild(credit_name);
+        credit_box.appendChild(credit_course);
 
-      // box.appendChild(credit_name);
-      // box.appendChild(credit_course);  
-      box.appendChild(credit_box);
-      
-      setTimeout(()=>box.innerHTML = old,5000);
+        // box.appendChild(credit_name);
+        // box.appendChild(credit_course);  
+        box.appendChild(credit_box);
+
+        setTimeout(() => box.innerHTML = old, 5000);
       }
     });
   }
-  
+
 
 
   //Initial welcome message
-  function display_welcome_message(){
+  function display_welcome_message() {
 
     const left_column = document.querySelector("#playHere");
     const p = document.createElement("p");
@@ -101,7 +105,7 @@ If not:     Don't fetch the play.
 
 
 
-      
+
 
       get_data(play.id);    //Fill the screen all async. Initial fetch    
     }
@@ -121,57 +125,57 @@ If not:     Don't fetch the play.
 
     let play_local = localStorage.getItem(id);
 
-    if(play_local == null){
-    
-    const resp = await fetch(`https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php?name=${id}`);
-    var data = await resp.json();    //Has to be function scoped
-    localStorage.setItem(id,JSON.stringify(data));
+    if (play_local == null) {
 
-    
+      const resp = await fetch(`https://www.randyconnolly.com/funwebdev/3rd/api/shakespeare/play.php?name=${id}`);
+      var data = await resp.json();    //Has to be function scoped
+      localStorage.setItem(id, JSON.stringify(data));
+
+
 
     }
-    else{
-      var data = JSON.parse(play_local);   
+    else {
+      var data = JSON.parse(play_local);
     }
 
-    fill_screen();                
-    show_play("ACT I","SCENE I");  //Act 1 scene 1 (Initial)
+    fill_screen();
+    show_play("ACT I", "SCENE I");  //Act 1 scene 1 (Initial)
     document.querySelector("#btnHighlight").addEventListener("click", highlight);  //Does the filter
 
 
 
     //Filters based on selection. Name must be populated below.
-    function highlight(e){
+    function highlight(e) {
 
       //Rewrite play:
-      
+
       const speaker = document.querySelector("#playerList").value;        //The player 
-                  //the play (text)
+      //the play (text)
       const text = document.querySelector("#txtHighlight").value;   //the stuff to highlight
 
       const act = document.querySelector("#actList");
       const scene = document.querySelector("#sceneList");
 
-      show_play(act.value,scene.value); //Refresh the play
+      show_play(act.value, scene.value); //Refresh the play
       document.querySelector("#playerList").value = speaker;
 
       const play = document.querySelector("#sceneHere");
-      
-      if(text != "" && text != " "){
-        
-        play.innerHTML = play.innerHTML.replaceAll(text,`<b>${text}</b>`);
+
+      if (text != "" && text != " ") {
+
+        play.innerHTML = play.innerHTML.replaceAll(text, `<b>${text}</b>`);
       }
 
-      if (speaker!= "ALL"){
-      const speaches = document.querySelectorAll(".speech");
+      if (speaker != "ALL") {
+        const speaches = document.querySelectorAll(".speech");
 
-      for (s of speaches){
-        if (s.firstChild.textContent != speaker){
-          s.remove();
+        for (s of speaches) {
+          if (s.firstChild.textContent != speaker) {
+            s.remove();
+          }
         }
       }
     }
-  }
 
 
 
@@ -179,17 +183,17 @@ If not:     Don't fetch the play.
     //An event handler will call this.
     //Act and scene will be in roman neumeral form.
     //Fills the filter option for people you can choose
-    function show_play(act_num,scene_num) {
+    function show_play(act_num, scene_num) {
 
       const page = document.querySelector("#playHere");    //Fill the right hand side
       page.innerHTML = "";
 
 
-      const act = data.acts.find(a=> a.name == `${act_num}`);         //the act
-      const scene = act.scenes.find(s=>s.name == `${scene_num}`);   //The first scene
+      const act = data.acts.find(a => a.name == `${act_num}`);         //the act
+      const scene = act.scenes.find(s => s.name == `${scene_num}`);   //The first scene
 
 
-      const h2 = document.createElement("h2");                       
+      const h2 = document.createElement("h2");
       h2.textContent = data.title;
 
       const article = document.createElement("article");
@@ -202,7 +206,7 @@ If not:     Don't fetch the play.
 
       const div = document.createElement("div");
       div.id = "sceneHere";
-      
+
       const h4 = document.createElement("h4");
       h4.textContent = scene.name;
 
@@ -222,8 +226,8 @@ If not:     Don't fetch the play.
 
       let speakers = [];   //unique speakers
 
-// append the rest to div.
-      for(s of scene.speeches) {
+      // append the rest to div.
+      for (s of scene.speeches) {
 
         const div2 = document.createElement("div");
         div2.setAttribute("class", "speech");
@@ -231,11 +235,11 @@ If not:     Don't fetch the play.
         span.textContent = s.speaker;
 
         div2.appendChild(span);
-        
+
         if (!speakers.includes(s.speaker)) {  //no duplicates
           speakers.push(s.speaker);
         }
-        for (l of s.lines){
+        for (l of s.lines) {
 
           const line = document.createElement("p");
           line.textContent = l;
@@ -251,7 +255,7 @@ If not:     Don't fetch the play.
 
       const speaker_option = document.querySelector("#playerList");
       speaker_option.innerHTML = "";
-      for (let s of speakers){
+      for (let s of speakers) {
         const option = document.createElement("option");
         option.textContent = s;
         speaker_option.appendChild(option);
@@ -259,12 +263,12 @@ If not:     Don't fetch the play.
       const all = document.createElement("option");
       all.textContent = "ALL";
       speaker_option.appendChild(all);
-     
 
-     
-      
-     }
-    
+
+
+
+    }
+
 
 
 
@@ -283,7 +287,7 @@ If not:     Don't fetch the play.
 
       const fieldset = document.createElement("fieldset");
       fieldset.setAttribute("id", "interface");            //this is the outer box (meh)
-      
+
       const h2 = document.createElement("h2");
       h2.textContent = id;
 
@@ -292,7 +296,7 @@ If not:     Don't fetch the play.
 
       const select2 = document.createElement("select");     //The scenes
       select2.id = "sceneList";
-      select2.addEventListener("change", e=>change_scene(e.target.value));
+      select2.addEventListener("change", e => change_scene(e.target.value));
 
 
 
@@ -316,9 +320,9 @@ If not:     Don't fetch the play.
       button2.textContent = "Close";
       button2.id = "btnClose";
       button2.setAttribute("data-id", id);
-      button2.addEventListener("click", show_screen_1);
+      button2.addEventListener("click", list_of_plays);
 
-      
+
 
       for (let a of data.acts) {  //The acts to choose from
 
@@ -328,10 +332,10 @@ If not:     Don't fetch the play.
       }
 
 
-      select.addEventListener("change", e=>fill_scene(e.target.value));     //Avalible scenes
-      select.setAttribute("selected","ACT I");          //Selects act 1 by default
+      select.addEventListener("change", e => fill_scene(e.target.value));     //Avalible scenes
+      select.setAttribute("selected", "ACT I");          //Selects act 1 by default
 
-      
+
 
       fieldset2.appendChild(select3);
       fieldset2.appendChild(input);
@@ -355,34 +359,34 @@ If not:     Don't fetch the play.
     }
 
 
-   function change_scene(scene_num){
-    
-    const act = document.querySelector("#actList");
-    
-    show_play(act.value,scene_num);
-   }
+    function change_scene(scene_num) {
+
+      const act = document.querySelector("#actList");
+
+      show_play(act.value, scene_num);
+    }
 
 
 
 
-    
+
     //When the act number is changed
-    function fill_scene(act_name){
+    function fill_scene(act_name) {
       const scene = document.querySelector("#sceneList");
       scene.innerHTML = "";
 
-      const sceneList = data.acts.find(a=>a.name == act_name);
+      const sceneList = data.acts.find(a => a.name == act_name);
 
-    for (let s of sceneList.scenes) {  //The acts to choose from
+      for (let s of sceneList.scenes) {  //The acts to choose from
 
         const option = document.createElement("option");
         option.textContent = s.name;
         scene.appendChild(option);
       }
 
-      
 
-      show_play(act_name,"SCENE I");  //Initial load.
+
+      show_play(act_name, "SCENE I");  //Initial load.
     }
   }
 
@@ -408,7 +412,7 @@ If not:     Don't fetch the play.
 
 
   //Detects that the play has been clicked.
-  function show_screen_1(e) {
+  function list_of_plays(e) {
 
 
     if (e.target.tagName == "LI" || e.target.tagName == "BUTTON") {   //If close was clicked.
@@ -449,7 +453,7 @@ If not:     Don't fetch the play.
       page.appendChild(body);
       page.appendChild(button);
 
-      show_screen_1_right(play);
+      list_of_plays_right(play);
     }
 
 
@@ -457,14 +461,14 @@ If not:     Don't fetch the play.
 
 
 
-    function show_screen_1_right(play) {
+    function list_of_plays_right(play) {
 
       const page = document.querySelector("#playHere");
       page.innerHTML = "";
 
       const header = document.createElement("h2");
       const data = document.createElement("p");
-      
+
       header.textContent = play.title;
 
       const wiki_link = document.createElement("a");
@@ -472,18 +476,18 @@ If not:     Don't fetch the play.
       const shakespeare_link = document.createElement("a");
 
       const list = document.createElement("ul");              //The list of links
-      list.id = "playInfo";                         
+      list.id = "playInfo";
 
       const placeholder = document.createElement("li");
       const placeholder2 = document.createElement("li");
       const placeholder3 = document.createElement("li");
 
 
-      wiki_link.setAttribute("href",play.wiki);
+      wiki_link.setAttribute("href", play.wiki);
       wiki_link.textContent = "Wiki link";
-      gutenberg_link.setAttribute("href",play.gutenberg);
+      gutenberg_link.setAttribute("href", play.gutenberg);
       gutenberg_link.textContent = "Gutenberg link";
-      shakespeare_link.setAttribute("href",play.shakespeareOrg);
+      shakespeare_link.setAttribute("href", play.shakespeareOrg);
       shakespeare_link.textContent = "Shakespeare org link";
       //Change later maybe
       //data.innerHTML = `<a href = ${play.likelyDate}      ,<br>${play.genre},<br>${play.wiki}, ${play.gutenberg}, ${play.shakespeareOrg}<br><br>${play.desc}`;
@@ -495,7 +499,7 @@ If not:     Don't fetch the play.
       list.appendChild(placeholder);
       list.appendChild(placeholder2);
       list.appendChild(placeholder3);
-      
+
       const plays_info = document.createElement("p");
       plays_info.textContent = play.desc;
 
@@ -515,17 +519,17 @@ If not:     Don't fetch the play.
 
   function sort(e) {
     //If ... Disable bubbling.
-    
+
     if (e.target.tagName === "INPUT") {
 
       e.stopPropagation();
 
       const label_name = e.target.nextSibling.nextSibling.textContent;
-      
+
       //Uses querySelectorAll so that it dosent break if there are no matches
       const highlighted = document.querySelectorAll(".selected"); //re highlight after editing list
-     
-      
+
+
       if (label_name == "Name") {
         display_by_name();
 
@@ -533,23 +537,23 @@ If not:     Don't fetch the play.
       else if (label_name == "Date") {
         display_by_date();
       }
-     
+
       const to_highlight = document.querySelectorAll("section ul li");
 
-      for (i of to_highlight){
-        if(i.textContent == highlighted[0].textContent){
+      for (i of to_highlight) {
+        if (i.textContent == highlighted[0].textContent) {
           i.classList.add("selected");
         }
       }
     }
   }
-  
+
 
 
 
   function display_by_date() {
 
-    
+
     const plays = document.querySelector("#playList ul");   //The individual plays
     plays.innerHTML = "";
 
@@ -572,9 +576,9 @@ If not:     Don't fetch the play.
         li.setAttribute("data-id", m.id);
         li.textContent = m.title;
 
-        if(m.filename != ""){
+        if (m.filename != "") {
           const img = document.createElement("img");
-          img.setAttribute("src","icon.png");
+          img.setAttribute("src", "icon.png");
           li.appendChild(img);
         }
 
@@ -598,7 +602,7 @@ If not:     Don't fetch the play.
       }
     }
     name.sort();
-  
+
     for (let n of name) {    //find the element that has that date
 
       const match = paintings.find(p => p.title == n); //The element to be added
@@ -607,16 +611,16 @@ If not:     Don't fetch the play.
       li.setAttribute("data-id", match.id);
       li.textContent = match.title;
 
-      if(match.filename != ""){
+      if (match.filename != "") {
         const img = document.createElement("img");
-        img.setAttribute("src","icon.png");
+        img.setAttribute("src", "icon.png");
         li.appendChild(img);
       }
 
       plays.appendChild(li);
-   // }
-  }
-    
+      // }
+    }
+
   }
 
 
