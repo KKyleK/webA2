@@ -1,0 +1,70 @@
+      const outer_box = document.createElement("fieldset");   //outer box
+      outer_box.setAttribute("id", "interface");            
+
+      const title = document.createElement("h2");              
+      title.textContent = id;
+
+      const act_select = document.createElement("select"); 
+      act_select.id = "actList";                                //Act list
+
+      const scene_select = document.createElement("select");    //The scenes
+      scene_select.id = "sceneList";
+      scene_select.addEventListener("change", e => change_scene(e.target.value));
+
+
+      const inner_box = document.createElement("fieldset");
+
+      const speaker_select = document.createElement("select"); 
+      speaker_select.id = "playerList";
+
+      const input_text = document.createElement("input");
+      input_text.setAttribute("type", "text");
+      input_text.id = "txtHighlight";
+      input_text.setAttribute("placeholder", "Enter a search term");
+
+      const button_filter = document.createElement("button");
+      button_filter.id = "btnHighlight";
+      button_filter.textContent = "Filter";
+      //event listener for the button_filter (filter)
+
+
+      const button_close = document.createElement("button");
+      button_close.textContent = "Close";
+      button_close.id = "btnClose";
+      button_close.setAttribute("data-id", id);
+      button_close.addEventListener("click", list_of_plays_middle);
+
+
+
+      for (let a of data.acts) {  //The acts to choose from
+
+        const act = document.createElement("option");
+        act.textContent = a.name;
+        act_select.appendChild(act);
+      }
+
+
+      act_select.addEventListener("change", e => fill_scene(e.target.value));     //Avalible scenes
+      act_select.setAttribute("selected", "ACT I");          //Selects act 1 by default
+
+
+
+      inner_box.appendChild(speaker_select);
+      inner_box.appendChild(input_text);
+      inner_box.appendChild(button_filter);
+
+      outer_box.appendChild(title);
+      outer_box.appendChild(act_select);
+      outer_box.appendChild(scene_select);
+      outer_box.appendChild(inner_box);
+      outer_box.appendChild(button_close);
+
+
+
+      const page = document.querySelector("aside");
+      page.innerHTML = "";
+
+      page.appendChild(outer_box);
+      page.appendChild(button_close);
+
+      fill_scene("ACT I");  //Initial load  of the scenes.
